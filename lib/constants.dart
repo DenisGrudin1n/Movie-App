@@ -15,7 +15,7 @@ final List<Movie> topMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_horizontal_cover.jpg",
       voteAverage: 3.5),
   Movie(
@@ -23,7 +23,7 @@ final List<Movie> topMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_horizontal_cover.jpg",
       voteAverage: 4.0),
   Movie(
@@ -31,7 +31,7 @@ final List<Movie> topMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_horizontal_cover.jpg",
       voteAverage: 3.5),
   Movie(
@@ -39,7 +39,7 @@ final List<Movie> topMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_horizontal_cover.jpg",
       voteAverage: 4.5),
   Movie(
@@ -47,7 +47,7 @@ final List<Movie> topMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_horizontal_cover.jpg",
       voteAverage: 4.0),
 ];
@@ -58,7 +58,7 @@ final List<Movie> latestMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_vertical_cover.jpg",
       voteAverage: 3.5),
   Movie(
@@ -66,7 +66,7 @@ final List<Movie> latestMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_vertical_cover.jpg",
       voteAverage: 4.0),
   Movie(
@@ -74,7 +74,7 @@ final List<Movie> latestMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_vertical_cover.jpg",
       voteAverage: 3.5),
   Movie(
@@ -82,7 +82,7 @@ final List<Movie> latestMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_vertical_cover.jpg",
       voteAverage: 4.5),
   Movie(
@@ -90,7 +90,7 @@ final List<Movie> latestMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_vertical_cover.jpg",
       voteAverage: 4.0),
   Movie(
@@ -98,7 +98,7 @@ final List<Movie> latestMovies = [
       title: "Hitman's Wife's Bodyguard",
       genre: "Action, Comedy, Crime",
       overview:
-          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth......",
+          "The world's most lethal odd couple - bodyguard Michael Bryce and hitman Darius Kincaid - are back on anoth...",
       posterPath: "assets/movie/movie_vertical_cover.jpg",
       voteAverage: 5.0),
 ];

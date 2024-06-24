@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:movieapp/constants.dart';
 import 'package:movieapp/models/movie_model.dart';
+import 'package:movieapp/screens/movie_details_page.dart';
+import 'package:movieapp/widgets/build_rating_stars.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -54,49 +56,59 @@ class HomePage extends StatelessWidget {
                 ),
                 itemBuilder: (BuildContext context, int index, int realIndex) {
                   Movie movie = topMovies[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(18),
-                        child: Image.asset(
-                          movie.posterPath,
-                          fit: BoxFit.cover,
-                          height: 180,
-                          width: 350,
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetailPage(movie: movie),
                         ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(right: 8, top: 8, bottom: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              movie.title,
-                              style: const TextStyle(
-                                color: whiteColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "${movie.voteAverage}",
-                                  style: const TextStyle(
-                                    color: whiteColor,
-                                    fontSize: 17,
-                                  ),
+                      );
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(18),
+                          child: Image.asset(
+                            movie.posterPath,
+                            fit: BoxFit.cover,
+                            height: 180,
+                            width: 350,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              right: 8, top: 8, bottom: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                movie.title,
+                                style: const TextStyle(
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
                                 ),
-                                const SizedBox(width: 5),
-                                _buildRatingStars(movie.voteAverage),
-                              ],
-                            ),
-                          ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "${movie.voteAverage}",
+                                    style: const TextStyle(
+                                      color: whiteColor,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  buildRatingStars(movie.voteAverage),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 },
               ),
@@ -139,33 +151,22 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               ...latestMovies.map(
-                (movie) => _buildLatestMovieItem(movie),
+                (movie) => InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetailPage(movie: movie),
+                        ),
+                      );
+                    },
+                    child: _buildLatestMovieItem(movie)),
               ),
             ],
           ),
         ],
       ),
     );
-  }
-
-  Widget _buildRatingStars(double voteAverage) {
-    List<Widget> stars = [];
-    var fullStars = voteAverage.floor();
-    var halfStars = (voteAverage * 2).round() % 2;
-
-    for (var i = 0; i < fullStars; i++) {
-      stars.add(const Icon(Icons.star, color: yellowColor));
-    }
-
-    if (halfStars > 0) {
-      stars.add(const Icon(Icons.star_half, color: yellowColor));
-    }
-
-    while (stars.length < 5) {
-      stars.add(const Icon(Icons.star_border, color: greyColor));
-    }
-
-    return Row(children: stars);
   }
 
   Widget _buildLatestMovieItem(Movie movie) {
@@ -207,7 +208,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 5.0),
-                    _buildRatingStars(movie.voteAverage),
+                    buildRatingStars(movie.voteAverage),
                   ],
                 ),
                 const SizedBox(height: 10.0),
