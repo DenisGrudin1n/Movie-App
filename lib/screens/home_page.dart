@@ -3,11 +3,27 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:movieapp/constants.dart';
 import 'package:movieapp/models/movie_model.dart';
 import 'package:movieapp/screens/movie_details_page.dart';
+import 'package:movieapp/services/movie_service.dart';
 import 'package:movieapp/widgets/bottom_navigation_bar.dart';
 import 'package:movieapp/widgets/build_rating_stars.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late Future<List<Movie>> topRatedMovies;
+  late Future<List<Movie>> latestMovies;
+
+  @override
+  void initState() {
+    topRatedMovies = MovieService().getTopRatedMovies();
+    latestMovies = MovieService().getLatestMovies();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +35,7 @@ class HomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Padding(
-                padding: EdgeInsets.fromLTRB(10, 40, 10, 20),
+                padding: EdgeInsets.fromLTRB(10, 40, 20, 20),
                 child: Row(
                   children: [
                     Text(
@@ -39,84 +55,96 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              CarouselSlider.builder(
-                itemCount: topMovies.length,
-                options: CarouselOptions(
-                  height: 270,
-                  enableInfiniteScroll: true,
-                  enlargeCenterPage: true,
-                  disableCenter: true,
-                  viewportFraction: 0.7,
-                  autoPlay: true,
-                  autoPlayInterval: const Duration(seconds: 3),
-                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  reverse: false,
-                  initialPage: 0,
-                  aspectRatio: 16 / 9,
-                ),
-                itemBuilder: (BuildContext context, int index, int realIndex) {
-                  Movie movie = topMovies[index];
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetailPage(movie: movie),
-                        ),
-                      );
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(18),
-                          child: Image.asset(
-                            movie.posterPath,
-                            fit: BoxFit.cover,
-                            height: 180,
-                            width: 350,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8, top: 8, bottom: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                movie.title,
-                                style: const TextStyle(
-                                  color: whiteColor,
-                                  fontWeight: boldFontWeight,
-                                  fontSize: 17,
-                                ),
+              FutureBuilder(
+                future: topRatedMovies,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  final movies = snapshot.data!;
+                  return CarouselSlider.builder(
+                    itemCount: movies.length > 5 ? 5 : movies.length,
+                    options: CarouselOptions(
+                      height: 270,
+                      enableInfiniteScroll: true,
+                      enlargeCenterPage: true,
+                      disableCenter: true,
+                      viewportFraction: 0.7,
+                      autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 3),
+                      autoPlayAnimationDuration:
+                          const Duration(milliseconds: 800),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      reverse: false,
+                      initialPage: 0,
+                      aspectRatio: 16 / 9,
+                    ),
+                    itemBuilder: (context, index, realIndex) {
+                      final movie = movies[index];
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MovieDetailPage(movie: movie),
+                            ),
+                          );
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(18),
+                              child: Image.network(
+                                "https://image.tmdb.org/t/p/original/${movie.backdropPath}",
+                                fit: BoxFit.cover,
+                                height: 180,
+                                width: 350,
                               ),
-                              Row(
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 8, top: 8, bottom: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "${movie.voteAverage}",
+                                    movie.title,
                                     style: const TextStyle(
                                       color: whiteColor,
+                                      fontWeight: boldFontWeight,
                                       fontSize: 17,
                                     ),
                                   ),
-                                  const SizedBox(width: 5),
-                                  buildRatingStars(movie.voteAverage),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        "4.0", // Const value for rating
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      buildRatingStars(
+                                          4.0), // Const value for rating stars
+                                    ],
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 },
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   children: [
                     Expanded(
@@ -151,17 +179,36 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              ...latestMovies.map(
-                (movie) => InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetailPage(movie: movie),
-                        ),
-                      );
-                    },
-                    child: _buildLatestMovieItem(movie)),
+              FutureBuilder(
+                future: latestMovies,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  final movies = snapshot.data!;
+                  return Column(
+                    children: List.generate(
+                      6,
+                      (index) {
+                        final movie = movies[index];
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    MovieDetailPage(movie: movie),
+                              ),
+                            );
+                          },
+                          child: _buildLatestMovieItem(movie),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -179,11 +226,26 @@ class HomePage extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(18.0),
-            child: Image.asset(
-              movie.posterPath,
+            child: Image.network(
+              "https://image.tmdb.org/t/p/original/${movie.posterPath}",
               fit: BoxFit.cover,
               height: 300,
               width: 190,
+              errorBuilder: (context, error, stackTrace) {
+                return const SizedBox(
+                  height: 300,
+                  width: 190,
+                  child: Center(
+                    child: Text(
+                      "No Image",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 20.0),
@@ -201,21 +263,21 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 10.0),
                 Row(
                   children: [
-                    Text(
-                      "${movie.voteAverage}",
-                      style: const TextStyle(
+                    const Text(
+                      "4.0", // Const value for rating
+                      style: TextStyle(
                         color: whiteColor,
                         fontSize: 20,
                         fontWeight: boldFontWeight,
                       ),
                     ),
                     const SizedBox(width: 5.0),
-                    buildRatingStars(movie.voteAverage),
+                    buildRatingStars(4.0), // Const value for rating stars
                   ],
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  movie.genre,
+                  "Drama", // Const value for genre
                   style: TextStyle(
                     color: whiteColor.withOpacity(0.9),
                   ),
@@ -224,7 +286,7 @@ class HomePage extends StatelessWidget {
                 Text(
                   movie.overview,
                   style: TextStyle(
-                    color: greyColor.withOpacity(0.85),
+                    color: whiteColor.withOpacity(0.9),
                   ),
                 ),
               ],
