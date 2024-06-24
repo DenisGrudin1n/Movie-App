@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:movieapp/providers/bottombar_navigation_provider.dart';
 import 'package:movieapp/providers/movies_provider.dart';
-import 'package:movieapp/screens/home_page.dart';
+import 'package:movieapp/widgets/bottom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -12,8 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MoviesProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => MoviesProvider()),
+        ChangeNotifierProvider(create: (context) => NavigationProvider()),
+      ],
       child: MaterialApp(
         title: 'Flutter Movie App',
         theme: ThemeData(
@@ -21,7 +25,12 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         debugShowCheckedModeBanner: false,
-        home: const HomePage(),
+        home: Scaffold(
+          body: Consumer<NavigationProvider>(
+            builder: (context, navigationProvider, _) =>
+                const CustomBottomNavigationBar().getPage(context),
+          ),
+        ),
       ),
     );
   }

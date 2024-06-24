@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:movieapp/constants.dart';
 import 'package:movieapp/models/movie_model.dart';
 import 'package:movieapp/screens/movie_details_page.dart';
+import 'package:movieapp/widgets/bottom_navigation_bar.dart';
 import 'package:movieapp/widgets/build_rating_stars.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,7 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: blackColor,
       body: ListView(
         children: [
           Column(
@@ -26,14 +27,14 @@ class HomePage extends StatelessWidget {
                       style: TextStyle(
                           color: whiteColor,
                           fontSize: 30,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: boldFontWeight),
                     ),
                     Text(
                       ".",
                       style: TextStyle(
                           color: yellowColor,
                           fontSize: 30,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: boldFontWeight),
                     ),
                   ],
                 ),
@@ -87,7 +88,7 @@ class HomePage extends StatelessWidget {
                                 movie.title,
                                 style: const TextStyle(
                                   color: whiteColor,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: boldFontWeight,
                                   fontSize: 17,
                                 ),
                               ),
@@ -126,7 +127,7 @@ class HomePage extends StatelessWidget {
                             style: TextStyle(
                               color: whiteColor,
                               fontSize: 30,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: boldFontWeight,
                             ),
                           ),
                           Text(
@@ -134,7 +135,7 @@ class HomePage extends StatelessWidget {
                             style: TextStyle(
                                 color: yellowColor,
                                 fontSize: 30,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: boldFontWeight),
                           ),
                         ],
                       ),
@@ -166,6 +167,7 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
     );
   }
 
