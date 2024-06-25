@@ -17,11 +17,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Future<List<Movie>> topRatedMovies;
   late Future<List<Movie>> latestMovies;
+  late Future<Map<int, String>> genres;
 
   @override
   void initState() {
     topRatedMovies = MovieService().getTopRatedMovies();
     latestMovies = MovieService().getLatestMovies();
+    genres = MovieService().getGenres();
     super.initState();
   }
 
@@ -56,14 +58,15 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               FutureBuilder(
-                future: topRatedMovies,
+                future: Future.wait([topRatedMovies, genres]),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
-                  final movies = snapshot.data!;
+                  final movies = snapshot.data![0] as List<Movie>;
+                  final genresMap = snapshot.data![1] as Map<int, String>;
                   return CarouselSlider.builder(
                     itemCount: movies.length > 5 ? 5 : movies.length,
                     options: CarouselOptions(
@@ -83,13 +86,17 @@ class _HomePageState extends State<HomePage> {
                     ),
                     itemBuilder: (context, index, realIndex) {
                       final movie = movies[index];
+                      String movieVoteInString =
+                          movie.voteAverage.toStringAsFixed(1);
+                      double movieVoteInDouble =
+                          double.parse(movieVoteInString);
                       return InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  MovieDetailPage(movie: movie),
+                              builder: (context) => MovieDetailPage(
+                                  movie: movie, genreMap: genresMap),
                             ),
                           );
                         },
@@ -121,16 +128,16 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Row(
                                     children: [
-                                      const Text(
-                                        "4.0", // Const value for rating
-                                        style: TextStyle(
+                                      Text(
+                                        (movie.voteAverage / 2)
+                                            .toStringAsFixed(1),
+                                        style: const TextStyle(
                                           color: whiteColor,
                                           fontSize: 17,
                                         ),
                                       ),
                                       const SizedBox(width: 5),
-                                      buildRatingStars(
-                                          4.0), // Const value for rating stars
+                                      buildRatingStars(movieVoteInDouble / 2),
                                     ],
                                   ),
                                 ],
@@ -180,14 +187,15 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               FutureBuilder(
-                future: latestMovies,
+                future: Future.wait([latestMovies, genres]),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
-                  final movies = snapshot.data!;
+                  final movies = snapshot.data![0] as List<Movie>;
+                  final genresMap = snapshot.data![1] as Map<int, String>;
                   return Column(
                     children: List.generate(
                       6,
@@ -198,12 +206,12 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    MovieDetailPage(movie: movie),
+                                builder: (context) => MovieDetailPage(
+                                    movie: movie, genreMap: genresMap),
                               ),
                             );
                           },
-                          child: _buildLatestMovieItem(movie),
+                          child: _buildLatestMovieItem(movie, genresMap),
                         );
                       },
                     ),
@@ -218,7 +226,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildLatestMovieItem(Movie movie) {
+  Widget _buildLatestMovieItem(Movie movie, Map<int, String> genres) {
+    String genreNames = movie.genreIds.map((id) => genres[id]).join(", ");
+
+    String overview = movie.overview;
+    bool isOverLength = overview.length > 200;
+
+    overview = isOverLength ? '${overview.substring(0, 100)}...' : overview;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
       child: Row(
@@ -239,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       "No Image",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: whiteColor,
                         fontSize: 20,
                       ),
                     ),
@@ -263,30 +278,30 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 10.0),
                 Row(
                   children: [
-                    const Text(
-                      "4.0", // Const value for rating
-                      style: TextStyle(
+                    Text(
+                      (movie.voteAverage / 2).toStringAsFixed(1),
+                      style: const TextStyle(
                         color: whiteColor,
                         fontSize: 20,
                         fontWeight: boldFontWeight,
                       ),
                     ),
                     const SizedBox(width: 5.0),
-                    buildRatingStars(4.0), // Const value for rating stars
+                    buildRatingStars(movie.voteAverage / 2),
                   ],
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  "Drama", // Const value for genre
-                  style: TextStyle(
-                    color: whiteColor.withOpacity(0.9),
+                  genreNames,
+                  style: const TextStyle(
+                    color: whiteColor,
                   ),
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  movie.overview,
+                  overview,
                   style: TextStyle(
-                    color: whiteColor.withOpacity(0.9),
+                    color: whiteColor.withOpacity(0.5),
                   ),
                 ),
               ],

@@ -3,15 +3,42 @@ import 'package:movieapp/constants.dart';
 import 'package:movieapp/models/movie_model.dart';
 import 'package:movieapp/widgets/build_rating_stars.dart';
 
-class MovieDetailPage extends StatelessWidget {
+class MovieDetailPage extends StatefulWidget {
   final Movie movie;
+  final Map<int, String> genreMap;
 
-  const MovieDetailPage({super.key, required this.movie});
+  const MovieDetailPage(
+      {super.key, required this.movie, required this.genreMap});
+
+  @override
+  State<MovieDetailPage> createState() => _MovieDetailPageState();
+}
+
+class _MovieDetailPageState extends State<MovieDetailPage> {
+  bool showFullOverview = false;
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+
+    List<String> genreNames = widget.movie.genreIds
+        .map((id) => widget.genreMap[id] ?? 'Unknown')
+        .toList();
+
+    String overview = widget.movie.overview;
+    bool isOverLength = overview.length > 200;
+
+    const readMoreText = TextSpan(
+      text: ' Read More',
+      style: TextStyle(
+        color: yellowColor,
+        fontSize: 18,
+        fontWeight: boldFontWeight,
+      ),
+    );
+
+    overview = isOverLength ? '${overview.substring(0, 175)}... ' : overview;
 
     return Scaffold(
       backgroundColor: blackColor,
@@ -21,11 +48,26 @@ class MovieDetailPage extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Image.asset(
-                  movie.posterPath,
+                Image.network(
+                  "https://image.tmdb.org/t/p/original/${widget.movie.posterPath}",
                   fit: BoxFit.cover,
                   height: screenHeight * 2 / 3,
                   width: screenWidth,
+                  errorBuilder: (context, error, stackTrace) {
+                    return SizedBox(
+                      height: screenHeight * 2 / 3,
+                      width: screenWidth,
+                      child: const Center(
+                        child: Text(
+                          "No Image",
+                          style: TextStyle(
+                            color: whiteColor,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 Container(
                   height: screenHeight * 2 / 3,
@@ -35,8 +77,8 @@ class MovieDetailPage extends StatelessWidget {
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                       colors: [
-                        Colors.black.withOpacity(0.9),
-                        Colors.transparent,
+                        blackColor.withOpacity(0.9),
+                        transparentColor,
                       ],
                       stops: const [0.0, 0.2],
                     ),
@@ -61,7 +103,7 @@ class MovieDetailPage extends StatelessWidget {
                   left: 16,
                   right: 16,
                   child: Text(
-                    movie.title,
+                    widget.movie.title,
                     style: const TextStyle(
                       color: whiteColor,
                       fontWeight: boldFontWeight,
@@ -86,38 +128,45 @@ class MovieDetailPage extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "${movie.voteAverage}",
+                        "${widget.movie.voteAverage / 2}",
                         style: const TextStyle(
                           color: whiteColor,
                           fontSize: 24,
                         ),
                       ),
                       const SizedBox(width: 10.0),
-                      buildRatingStars(movie.voteAverage),
+                      buildRatingStars(widget.movie.voteAverage / 2),
                     ],
                   ),
                   const SizedBox(height: 2.0),
                   Text(
-                    movie.genre,
+                    genreNames.join(', '),
                     style: TextStyle(
                       color: whiteColor.withOpacity(0.9),
                       fontSize: 16,
                     ),
                   ),
                   const SizedBox(height: 16.0),
-                  Text(
-                    movie.overview,
-                    style: TextStyle(
-                      color: greyColor.withOpacity(0.85),
-                      fontSize: 18,
-                    ),
-                  ),
-                  const Text(
-                    "Read More",
-                    style: TextStyle(
-                      color: yellowColor,
-                      fontSize: 18,
-                      fontWeight: boldFontWeight,
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showFullOverview = !showFullOverview;
+                      });
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        text:
+                            showFullOverview ? widget.movie.overview : overview,
+                        style: TextStyle(
+                          color: whiteColor.withOpacity(0.5),
+                          fontSize: 18,
+                        ),
+                        children: isOverLength
+                            ? [
+                                if (!showFullOverview) readMoreText,
+                              ]
+                            : [],
+                      ),
                     ),
                   ),
                 ],

@@ -1,7 +1,7 @@
 class Movie {
   final int id;
   final String title;
-  final String genre;
+  final List<int> genreIds;
   final String overview;
   final String posterPath;
   final String backdropPath;
@@ -11,7 +11,7 @@ class Movie {
   Movie({
     required this.id,
     required this.title,
-    required this.genre,
+    required this.genreIds,
     required this.overview,
     required this.posterPath,
     required this.backdropPath,
@@ -23,7 +23,7 @@ class Movie {
     return Movie(
       id: json['id'] ?? 'Unknown',
       title: json['title'] ?? 'Unknown',
-      genre: json['genre'] ?? 'Unknown',
+      genreIds: List<int>.from(json['genre_ids']),
       overview: json['overview'] ?? 'Unknown',
       posterPath: json['poster_path'] ?? 'Unknown',
       backdropPath: json['backdrop_path'] ?? 'Unknown',
@@ -40,7 +40,7 @@ class Movie {
       'backdrop_path': backdropPath,
       'vote_average': voteAverage,
       'overview': overview,
-      'genre': genre,
+      'genreIds': genreIds,
       'release_date': releaseDate,
     };
   }
