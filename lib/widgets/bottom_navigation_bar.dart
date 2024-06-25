@@ -23,6 +23,29 @@ class CustomBottomNavigationBar extends StatelessWidget {
       currentIndex: navigationProvider.currentIndex,
       onTap: (index) {
         navigationProvider.updateIndex(index);
+        switch (index) {
+          case 0:
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+            );
+            break;
+          case 1:
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const SearchPage(),
+              ),
+            );
+            break;
+          case 2:
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const SavedPage(),
+              ),
+            );
+            break;
+        }
       },
       items: const [
         BottomNavigationBarItem(

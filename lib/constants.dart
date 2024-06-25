@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 const Color yellowColor = Color.fromARGB(255, 254, 194, 0);
 const Color whiteColor = Colors.white;
 const Color blackColor = Colors.black;
-const Color greyColor = Colors.grey;
+const Color lightGreyColor = Colors.grey;
+const Color darkGreyColor = Color.fromARGB(255, 42, 42, 42);
 const Color transparentColor = Colors.transparent;
 
 const FontWeight boldFontWeight = FontWeight.bold;

@@ -15,7 +15,7 @@ Widget buildRatingStars(double voteAverage) {
   }
 
   while (stars.length < 5) {
-    stars.add(const Icon(Icons.star_border, color: greyColor));
+    stars.add(const Icon(Icons.star_border, color: lightGreyColor));
   }
 
   return Row(children: stars);
