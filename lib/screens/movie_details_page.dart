@@ -94,7 +94,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     child: const Icon(
                       Icons.arrow_back_ios,
                       size: 35,
-                      color: whiteColor,
+                      color: yellowColor,
                     ),
                   ),
                 ),
@@ -141,8 +141,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   const SizedBox(height: 2.0),
                   Text(
                     genreNames.join(', '),
-                    style: TextStyle(
-                      color: whiteColor.withOpacity(0.9),
+                    style: const TextStyle(
+                      color: whiteColor,
                       fontSize: 16,
                     ),
                   ),

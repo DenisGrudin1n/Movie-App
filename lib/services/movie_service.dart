@@ -9,6 +9,7 @@ class MovieService {
   final latestUrl = "https://api.themoviedb.org/3/discover/movie";
   final genresUrl =
       "https://api.themoviedb.org/3/genre/movie/list?api_key=$apiKey&language=en-US";
+  final searchUrl = "https://api.themoviedb.org/3/search/movie";
 
   Future<List<Movie>> getTopRatedMovies() async {
     final response = await http.get(
@@ -55,6 +56,21 @@ class MovieService {
       return genres;
     } else {
       throw Exception('Failed to load genres');
+    }
+  }
+
+  Future<List<Movie>> searchMovies(String query) async {
+    final url = Uri.parse('$searchUrl?api_key=$apiKey&query=$query');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body)['results'];
+      List<Movie> movies =
+          data.map((movieJson) => Movie.fromJson(movieJson)).toList();
+      return movies;
+    } else {
+      throw Exception('Failed to search movies');
     }
   }
 }

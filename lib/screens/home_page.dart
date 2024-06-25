@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
     String overview = movie.overview;
     bool isOverLength = overview.length > 200;
 
-    overview = isOverLength ? '${overview.substring(0, 100)}...' : overview;
+    overview = isOverLength ? '${overview.substring(0, 150)}...' : overview;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),

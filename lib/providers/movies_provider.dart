@@ -7,14 +7,20 @@ class MoviesProvider with ChangeNotifier {
 
   List<Movie> _topMovies = [];
   List<Movie> _latestMovies = [];
+  List<Movie> _searchResults = [];
+  Map<int, String> _genreMap = {};
   bool _isLoading = false;
 
   List<Movie> get topMovies => _topMovies;
   List<Movie> get latestMovies => _latestMovies;
+  List<Movie> get searchResults => _searchResults;
+  Map<int, String> get genreMap => _genreMap;
   bool get isLoading => _isLoading;
 
   MoviesProvider() {
     getTopRatedMovies();
+    getLatestMovies();
+    loadGenres();
   }
 
   Future<void> getTopRatedMovies() async {
@@ -43,5 +49,28 @@ class MoviesProvider with ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  Future<void> searchMovies(String query) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _searchResults = await _movieService.searchMovies(query);
+    } catch (error) {
+      // Handle error
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> loadGenres() async {
+    try {
+      _genreMap = await _movieService.getGenres();
+      notifyListeners();
+    } catch (error) {
+      // Handle error
+    }
   }
 }

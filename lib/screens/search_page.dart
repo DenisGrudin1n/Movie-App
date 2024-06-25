@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/constants.dart';
+import 'package:movieapp/models/movie_model.dart';
 import 'package:movieapp/providers/bottombar_navigation_provider.dart';
+import 'package:movieapp/providers/movies_provider.dart';
 import 'package:movieapp/screens/home_page.dart';
+import 'package:movieapp/screens/movie_details_page.dart';
 import 'package:movieapp/widgets/bottom_navigation_bar.dart';
 import 'package:movieapp/widgets/build_rating_stars.dart';
 import 'package:provider/provider.dart';
@@ -86,6 +89,14 @@ class SearchPage extends StatelessWidget {
                               TextStyle(color: lightGreyColor.withOpacity(0.3)),
                         ),
                         cursorColor: whiteColor,
+                        onSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            var moviesProvider = Provider.of<MoviesProvider>(
+                                context,
+                                listen: false);
+                            moviesProvider.searchMovies(value);
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -93,24 +104,49 @@ class SearchPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                "Search results (0)",
-                style: TextStyle(
-                  color: whiteColor,
-                  fontSize: 18,
-                  fontWeight: mediumFontWeight,
-                ),
-              ),
+            Consumer<MoviesProvider>(
+              builder: (context, moviesProvider, _) {
+                final searchResults = moviesProvider.searchResults;
+                final genreMap = moviesProvider.genreMap;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        "Search results (${searchResults.length})",
+                        style: const TextStyle(
+                          color: whiteColor,
+                          fontSize: 18,
+                          fontWeight: mediumFontWeight,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: searchResults.length,
+                      itemBuilder: (context, index) {
+                        final movie = searchResults[index];
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MovieDetailPage(
+                                    movie: movie, genreMap: genreMap),
+                              ),
+                            );
+                          },
+                          child: _buildSearchResultItem(movie, genreMap),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
-            const SizedBox(height: 10),
-            _buildSearchResultItem(),
-            _buildSearchResultItem(),
-            _buildSearchResultItem(),
-            _buildSearchResultItem(),
-            _buildSearchResultItem(),
-            _buildSearchResultItem(),
           ],
         ),
       ]),
@@ -118,18 +154,39 @@ class SearchPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchResultItem() {
+  Widget _buildSearchResultItem(Movie movie, Map<int, String> genreMap) {
+    String overview = movie.overview;
+    bool isOverLength = overview.length > 200;
+
+    overview = isOverLength ? '${overview.substring(0, 150)}...' : overview;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 300,
-            width: 180,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18.0),
-              color: lightGreyColor.withOpacity(0.4),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(18.0),
+            child: Image.network(
+              "https://image.tmdb.org/t/p/original/${movie.posterPath}",
+              fit: BoxFit.cover,
+              height: 300,
+              width: 190,
+              errorBuilder: (context, error, stackTrace) {
+                return const SizedBox(
+                  height: 300,
+                  width: 190,
+                  child: Center(
+                    child: Text(
+                      "No Image",
+                      style: TextStyle(
+                        color: whiteColor,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 20.0),
@@ -137,9 +194,9 @@ class SearchPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Movie Title",
-                  style: TextStyle(
+                Text(
+                  movie.title,
+                  style: const TextStyle(
                     color: whiteColor,
                     fontWeight: boldFontWeight,
                     fontSize: 20.0,
@@ -148,29 +205,29 @@ class SearchPage extends StatelessWidget {
                 const SizedBox(height: 10.0),
                 Row(
                   children: [
-                    const Text(
-                      "4.25",
-                      style: TextStyle(
+                    Text(
+                      (movie.voteAverage / 2).toStringAsFixed(1),
+                      style: const TextStyle(
                         color: whiteColor,
                         fontSize: 20,
                       ),
                     ),
                     const SizedBox(width: 5.0),
-                    buildRatingStars(4.25),
+                    buildRatingStars(movie.voteAverage / 2),
                   ],
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  "Action, Adventure, Sci-Fi",
+                  _buildGenres(movie.genreIds, genreMap),
                   style: TextStyle(
                     color: whiteColor.withOpacity(0.9),
                   ),
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus enim vel commodo tristique.",
+                  overview,
                   style: TextStyle(
-                    color: whiteColor.withOpacity(0.9),
+                    color: whiteColor.withOpacity(0.5),
                   ),
                 ),
               ],
@@ -179,5 +236,11 @@ class SearchPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _buildGenres(List<int> genreIds, Map<int, String> genreMap) {
+    List<String> genres =
+        genreIds.map((id) => genreMap[id] ?? 'Unknown').toList();
+    return genres.join(', ');
   }
 }
