@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/constants.dart';
 import 'package:movieapp/providers/bottombar_navigation_provider.dart';
-import 'package:movieapp/screens/home_page.dart';
-import 'package:movieapp/screens/saved_page.dart';
-import 'package:movieapp/screens/search_page.dart';
+import 'package:movieapp/pages/home_page.dart';
+import 'package:movieapp/pages/bookmarks_page.dart';
+import 'package:movieapp/pages/search_page.dart';
 import 'package:provider/provider.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {

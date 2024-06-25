@@ -3,8 +3,8 @@ import 'package:movieapp/constants.dart';
 import 'package:movieapp/models/movie_model.dart';
 import 'package:movieapp/providers/bottombar_navigation_provider.dart';
 import 'package:movieapp/providers/movies_provider.dart';
-import 'package:movieapp/screens/home_page.dart';
-import 'package:movieapp/screens/movie_details_page.dart';
+import 'package:movieapp/pages/home_page.dart';
+import 'package:movieapp/pages/movie_details_page.dart';
 import 'package:movieapp/widgets/bottom_navigation_bar.dart';
 import 'package:movieapp/widgets/build_rating_stars.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +38,7 @@ class SearchPage extends StatelessWidget {
                     },
                     child: const Icon(
                       Icons.arrow_back_ios,
-                      size: 35,
+                      size: 28,
                       color: yellowColor,
                     ),
                   ),
@@ -85,8 +85,10 @@ class SearchPage extends StatelessWidget {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Search',
-                          hintStyle:
-                              TextStyle(color: lightGreyColor.withOpacity(0.3)),
+                          hintStyle: TextStyle(
+                            color: lightGreyColor.withOpacity(0.3),
+                            fontSize: 18,
+                          ),
                         ),
                         cursorColor: whiteColor,
                         onSubmitted: (value) {
@@ -139,7 +141,8 @@ class SearchPage extends StatelessWidget {
                               ),
                             );
                           },
-                          child: _buildSearchResultItem(movie, genreMap),
+                          child:
+                              _buildSearchResultItem(movie, genreMap, context),
                         );
                       },
                     ),
@@ -154,40 +157,65 @@ class SearchPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchResultItem(Movie movie, Map<int, String> genreMap) {
+  Widget _buildSearchResultItem(
+      Movie movie, Map<int, String> genreMap, BuildContext context) {
     String overview = movie.overview;
     bool isOverLength = overview.length > 200;
 
     overview = isOverLength ? '${overview.substring(0, 150)}...' : overview;
+
+    final moviesProvider = Provider.of<MoviesProvider>(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(18.0),
-            child: Image.network(
-              "https://image.tmdb.org/t/p/original/${movie.posterPath}",
-              fit: BoxFit.cover,
-              height: 300,
-              width: 190,
-              errorBuilder: (context, error, stackTrace) {
-                return const SizedBox(
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(18.0),
+                child: Image.network(
+                  "https://image.tmdb.org/t/p/original/${movie.posterPath}",
+                  fit: BoxFit.cover,
                   height: 300,
                   width: 190,
-                  child: Center(
-                    child: Text(
-                      "No Image",
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontSize: 20,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const SizedBox(
+                      height: 300,
+                      width: 190,
+                      child: Center(
+                        child: Text(
+                          "No Image",
+                          style: TextStyle(
+                            color: whiteColor,
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
-                    ),
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                top: 5,
+                right: 5,
+                child: IconButton(
+                  icon: Icon(
+                    moviesProvider.bookmarkedMovieIds.contains(movie.id)
+                        ? Icons.bookmark
+                        : Icons.bookmark_border,
+                    color: moviesProvider.bookmarkedMovieIds.contains(movie.id)
+                        ? yellowColor
+                        : whiteColor,
+                    size: 28,
                   ),
-                );
-              },
-            ),
+                  onPressed: () {
+                    moviesProvider.toggleBookmark(movie.id);
+                  },
+                ),
+              ),
+            ],
           ),
           const SizedBox(width: 20.0),
           Expanded(

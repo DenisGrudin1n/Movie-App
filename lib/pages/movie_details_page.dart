@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/constants.dart';
 import 'package:movieapp/models/movie_model.dart';
+import 'package:movieapp/providers/movies_provider.dart';
 import 'package:movieapp/widgets/build_rating_stars.dart';
+import 'package:provider/provider.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final Movie movie;
@@ -93,9 +95,30 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     },
                     child: const Icon(
                       Icons.arrow_back_ios,
-                      size: 35,
-                      color: yellowColor,
+                      size: 28,
+                      color: whiteColor,
                     ),
+                  ),
+                ),
+                Positioned(
+                  top: 80,
+                  right: 16,
+                  child: Consumer<MoviesProvider>(
+                    builder: (context, moviesProvider, child) {
+                      return IconButton(
+                        icon: Icon(
+                          moviesProvider.bookmarkedMovieIds
+                                  .contains(widget.movie.id)
+                              ? Icons.bookmark
+                              : Icons.bookmark_border,
+                          color: whiteColor,
+                          size: 28,
+                        ),
+                        onPressed: () {
+                          moviesProvider.toggleBookmark(widget.movie.id);
+                        },
+                      );
+                    },
                   ),
                 ),
                 Positioned(

@@ -9,12 +9,14 @@ class MoviesProvider with ChangeNotifier {
   List<Movie> _latestMovies = [];
   List<Movie> _searchResults = [];
   Map<int, String> _genreMap = {};
+  final Set<int> _bookmarkedMovieIds = {};
   bool _isLoading = false;
 
   List<Movie> get topMovies => _topMovies;
   List<Movie> get latestMovies => _latestMovies;
   List<Movie> get searchResults => _searchResults;
   Map<int, String> get genreMap => _genreMap;
+  Set<int> get bookmarkedMovieIds => _bookmarkedMovieIds;
   bool get isLoading => _isLoading;
 
   MoviesProvider() {
@@ -72,5 +74,14 @@ class MoviesProvider with ChangeNotifier {
     } catch (error) {
       // Handle error
     }
+  }
+
+  void toggleBookmark(int movieId) {
+    if (_bookmarkedMovieIds.contains(movieId)) {
+      _bookmarkedMovieIds.remove(movieId);
+    } else {
+      _bookmarkedMovieIds.add(movieId);
+    }
+    notifyListeners();
   }
 }
