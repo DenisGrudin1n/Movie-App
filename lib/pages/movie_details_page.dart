@@ -23,6 +23,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+    bool isBookmarked =
+        Provider.of<MoviesProvider>(context).isBookmarked(widget.movie.id);
 
     List<String> genreNames = widget.movie.genreIds
         .map((id) => widget.genreMap[id] ?? 'Unknown')
@@ -107,15 +109,13 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     builder: (context, moviesProvider, child) {
                       return IconButton(
                         icon: Icon(
-                          moviesProvider.bookmarkedMovieIds
-                                  .contains(widget.movie.id)
-                              ? Icons.bookmark
-                              : Icons.bookmark_border,
-                          color: whiteColor,
+                          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                          color: isBookmarked ? yellowColor : whiteColor,
                           size: 28,
                         ),
                         onPressed: () {
-                          moviesProvider.toggleBookmark(widget.movie.id);
+                          Provider.of<MoviesProvider>(context, listen: false)
+                              .toggleBookmark(widget.movie, widget.genreMap);
                         },
                       );
                     },
@@ -151,7 +151,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   Row(
                     children: [
                       Text(
-                        "${widget.movie.voteAverage / 2}",
+                        (widget.movie.voteAverage / 2).toStringAsFixed(1),
                         style: const TextStyle(
                           color: whiteColor,
                           fontSize: 24,

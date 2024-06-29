@@ -41,7 +41,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           case 2:
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const SavedPage(),
+                builder: (context) => const BookmarksPage(),
               ),
             );
             break;
@@ -72,7 +72,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       case 1:
         return const SearchPage();
       case 2:
-        return const SavedPage();
+        return const BookmarksPage();
       default:
         return const HomePage();
     }

@@ -9,14 +9,15 @@ class MoviesProvider with ChangeNotifier {
   List<Movie> _latestMovies = [];
   List<Movie> _searchResults = [];
   Map<int, String> _genreMap = {};
-  final Set<int> _bookmarkedMovieIds = {};
+  final List<int> _bookmarkedMovieIds = [];
   bool _isLoading = false;
 
   List<Movie> get topMovies => _topMovies;
   List<Movie> get latestMovies => _latestMovies;
   List<Movie> get searchResults => _searchResults;
   Map<int, String> get genreMap => _genreMap;
-  Set<int> get bookmarkedMovieIds => _bookmarkedMovieIds;
+
+  List<int> get bookmarkedMovieIds => _bookmarkedMovieIds;
   bool get isLoading => _isLoading;
 
   MoviesProvider() {
@@ -76,12 +77,33 @@ class MoviesProvider with ChangeNotifier {
     }
   }
 
-  void toggleBookmark(int movieId) {
-    if (_bookmarkedMovieIds.contains(movieId)) {
-      _bookmarkedMovieIds.remove(movieId);
+  final List<Movie> _bookmarkedMovies = [];
+
+  List<Movie> get bookmarkedMovies => _bookmarkedMovies;
+
+  void toggleBookmark(Movie movie, Map<int, String> genres) {
+    List<String> genreNames = movie.genreIds.map((id) => genres[id]!).toList();
+    Movie movieWithGenres = Movie(
+      id: movie.id,
+      title: movie.title,
+      genreIds: movie.genreIds,
+      overview: movie.overview,
+      posterPath: movie.posterPath,
+      backdropPath: movie.backdropPath,
+      voteAverage: movie.voteAverage,
+      releaseDate: movie.releaseDate,
+      genreNames: genreNames,
+    );
+
+    if (_bookmarkedMovies.any((m) => m.id == movie.id)) {
+      _bookmarkedMovies.removeWhere((m) => m.id == movie.id);
     } else {
-      _bookmarkedMovieIds.add(movieId);
+      _bookmarkedMovies.add(movieWithGenres);
     }
     notifyListeners();
+  }
+
+  bool isBookmarked(int movieId) {
+    return _bookmarkedMovies.any((m) => m.id == movieId);
   }
 }

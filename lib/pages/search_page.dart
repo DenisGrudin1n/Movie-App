@@ -161,10 +161,10 @@ class SearchPage extends StatelessWidget {
       Movie movie, Map<int, String> genreMap, BuildContext context) {
     String overview = movie.overview;
     bool isOverLength = overview.length > 200;
-
     overview = isOverLength ? '${overview.substring(0, 150)}...' : overview;
 
-    final moviesProvider = Provider.of<MoviesProvider>(context);
+    bool isBookmarked =
+        Provider.of<MoviesProvider>(context).isBookmarked(movie.id);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
@@ -202,16 +202,13 @@ class SearchPage extends StatelessWidget {
                 right: 5,
                 child: IconButton(
                   icon: Icon(
-                    moviesProvider.bookmarkedMovieIds.contains(movie.id)
-                        ? Icons.bookmark
-                        : Icons.bookmark_border,
-                    color: moviesProvider.bookmarkedMovieIds.contains(movie.id)
-                        ? yellowColor
-                        : whiteColor,
+                    isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                    color: isBookmarked ? yellowColor : whiteColor,
                     size: 28,
                   ),
                   onPressed: () {
-                    moviesProvider.toggleBookmark(movie.id);
+                    Provider.of<MoviesProvider>(context, listen: false)
+                        .toggleBookmark(movie, genreMap);
                   },
                 ),
               ),

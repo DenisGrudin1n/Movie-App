@@ -75,6 +75,8 @@ class HomePage extends StatelessWidget {
                             movie.voteAverage.toStringAsFixed(1);
                         double movieVoteInDouble =
                             double.parse(movieVoteInString);
+                        bool isBookmarked =
+                            moviesProvider.isBookmarked(movie.id);
                         return InkWell(
                           onTap: () {
                             Navigator.push(
@@ -141,18 +143,18 @@ class HomePage extends StatelessWidget {
                                 right: 5,
                                 child: IconButton(
                                   icon: Icon(
-                                    moviesProvider.bookmarkedMovieIds
-                                            .contains(movie.id)
+                                    isBookmarked
                                         ? Icons.bookmark
                                         : Icons.bookmark_border,
-                                    color: moviesProvider.bookmarkedMovieIds
-                                            .contains(movie.id)
-                                        ? yellowColor
-                                        : whiteColor,
+                                    color:
+                                        isBookmarked ? yellowColor : whiteColor,
                                     size: 28,
                                   ),
                                   onPressed: () {
-                                    moviesProvider.toggleBookmark(movie.id);
+                                    Provider.of<MoviesProvider>(context,
+                                            listen: false)
+                                        .toggleBookmark(
+                                            movie, moviesProvider.genreMap);
                                   },
                                 ),
                               ),
@@ -252,7 +254,8 @@ class HomePage extends StatelessWidget {
 
     overview = isOverLength ? '${overview.substring(0, 150)}...' : overview;
 
-    final moviesProvider = Provider.of<MoviesProvider>(context);
+    bool isBookmarked =
+        Provider.of<MoviesProvider>(context).isBookmarked(movie.id);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
@@ -290,16 +293,13 @@ class HomePage extends StatelessWidget {
                 right: 5,
                 child: IconButton(
                   icon: Icon(
-                    moviesProvider.bookmarkedMovieIds.contains(movie.id)
-                        ? Icons.bookmark
-                        : Icons.bookmark_border,
-                    color: moviesProvider.bookmarkedMovieIds.contains(movie.id)
-                        ? yellowColor
-                        : whiteColor,
+                    isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                    color: isBookmarked ? yellowColor : whiteColor,
                     size: 28,
                   ),
                   onPressed: () {
-                    moviesProvider.toggleBookmark(movie.id);
+                    Provider.of<MoviesProvider>(context, listen: false)
+                        .toggleBookmark(movie, genres);
                   },
                 ),
               ),
