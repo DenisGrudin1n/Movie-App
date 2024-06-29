@@ -170,34 +170,20 @@ class HomePage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Text(
-                            "Latest",
-                            style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 30,
-                              fontWeight: boldFontWeight,
-                            ),
-                          ),
-                          Text(
-                            ".",
-                            style: TextStyle(
-                                color: yellowColor,
-                                fontSize: 30,
-                                fontWeight: boldFontWeight),
-                          ),
-                        ],
+                    Text(
+                      "Latest",
+                      style: TextStyle(
+                        color: whiteColor,
+                        fontSize: 30,
+                        fontWeight: boldFontWeight,
                       ),
                     ),
                     Text(
-                      "SEE MORE",
+                      ".",
                       style: TextStyle(
-                        color: yellowColor,
-                        fontSize: 14,
-                        fontWeight: mediumFontWeight,
-                      ),
+                          color: yellowColor,
+                          fontSize: 30,
+                          fontWeight: boldFontWeight),
                     ),
                   ],
                 ),

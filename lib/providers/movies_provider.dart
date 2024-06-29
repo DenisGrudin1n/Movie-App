@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:movieapp/models/movie_model.dart';
 import 'package:movieapp/services/movie_service.dart';
 
 class MoviesProvider with ChangeNotifier {
   final MovieService _movieService = MovieService();
+  final Logger _logger = Logger();
 
   List<Movie> _topMovies = [];
   List<Movie> _latestMovies = [];
   List<Movie> _searchResults = [];
+  final List<Movie> _bookmarkedMovies = [];
   Map<int, String> _genreMap = {};
   final List<int> _bookmarkedMovieIds = [];
   bool _isLoading = false;
@@ -15,6 +18,7 @@ class MoviesProvider with ChangeNotifier {
   List<Movie> get topMovies => _topMovies;
   List<Movie> get latestMovies => _latestMovies;
   List<Movie> get searchResults => _searchResults;
+  List<Movie> get bookmarkedMovies => _bookmarkedMovies;
   Map<int, String> get genreMap => _genreMap;
 
   List<int> get bookmarkedMovieIds => _bookmarkedMovieIds;
@@ -33,7 +37,7 @@ class MoviesProvider with ChangeNotifier {
     try {
       _topMovies = await _movieService.getTopRatedMovies();
     } catch (error) {
-      // Handle error
+      _logger.e('Error fetching top rated movies', error: error);
     }
 
     _isLoading = false;
@@ -47,7 +51,7 @@ class MoviesProvider with ChangeNotifier {
     try {
       _latestMovies = await _movieService.getLatestMovies();
     } catch (error) {
-      // Handle error
+      _logger.e('Error fetching top rated movies', error: error);
     }
 
     _isLoading = false;
@@ -61,7 +65,7 @@ class MoviesProvider with ChangeNotifier {
     try {
       _searchResults = await _movieService.searchMovies(query);
     } catch (error) {
-      // Handle error
+      _logger.e('Error fetching top rated movies', error: error);
     }
 
     _isLoading = false;
@@ -73,13 +77,9 @@ class MoviesProvider with ChangeNotifier {
       _genreMap = await _movieService.getGenres();
       notifyListeners();
     } catch (error) {
-      // Handle error
+      _logger.e('Error fetching top rated movies', error: error);
     }
   }
-
-  final List<Movie> _bookmarkedMovies = [];
-
-  List<Movie> get bookmarkedMovies => _bookmarkedMovies;
 
   void toggleBookmark(Movie movie, Map<int, String> genres) {
     List<String> genreNames = movie.genreIds.map((id) => genres[id]!).toList();
